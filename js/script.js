@@ -1,9 +1,11 @@
 // TODO: 1. Определить стартовое положение змейки
-let snakeX = 1, snakeY = 10;
+let snakeX = 1, snakeY = 1;
 let foodX, foodY;
 let velocityX = 0, velocityY = 0;
 let snakeBody = [];
 let score = 0;
+let delay = 500;
+let run;
 
 const storageKeys = {
     highScore: 'snake:high_score',
@@ -23,8 +25,8 @@ function openLostModal() {
 }
 
 const updateFoodPosition = () => {
-    foodX = Math.floor(Math.random() * 30) + 1;
-    foodY = Math.floor(Math.random() * 30) + 1;
+    foodX = Math.floor(Math.random() * 29) + 2;
+    foodY = Math.floor(Math.random() * 29) + 2;
 }
 
 const changeDirection = e => {
@@ -89,6 +91,11 @@ function handleNewIteration() {
     localStorage.setItem(storageKeys.highScore, highScore);
 
     drawHighScore(highScore);
+    clearInterval(run);
+    if (delay > 100){
+        delay -= 50;
+    }
+    run = setInterval(initGame, delay);
 }
 
 function isSnakeHeadHitBody(snakeBody, i) {
@@ -100,9 +107,10 @@ function isGameOver(snakeX, snakeY) {
 }
 
 function restartGame() {
-    clearInterval(document.intervalId);
-    snakeX = 5;
-    snakeY = 5;
+    //clearInterval(document.intervalId);
+    clearInterval(run);
+    snakeX = 1;
+    snakeY = 1;
     velocityX = 0;
     velocityY = 0;
     snakeBody = [];
@@ -111,7 +119,9 @@ function restartGame() {
 
     const modal = document.getElementById('game-over-modal');
     modal.style.display = 'none';
-    document.intervalId = setInterval(initGame, 100);
+    //document.intervalId = setInterval(initGame, 100);
+    delay = 500;
+    run = setInterval(initGame, delay);
     document.querySelector('#score').innerText = score;
 }
 
@@ -161,14 +171,16 @@ document.addEventListener("DOMContentLoaded", ()=> {
 
     updateFoodPosition();
 
-    const intervalId = setInterval(initGame, 100);
+   //const intervalId = setInterval(initGame, 500);
+   run = setInterval(initGame, delay);
 
     // TODO: 2. Включить отслеживание нажатия клавиатуры для старта игры
     document.addEventListener('keyup', changeDirection)
 
     document.addEventListener('snake:game_over', function (event) {
         // TODO: 5. Включить обработку события завершения игры
-        clearInterval(intervalId);
+      //  clearInterval(intervalId);
+        clearInterval(run);
         openLostModal();
     });
 })

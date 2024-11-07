@@ -39,10 +39,10 @@
   grid-template: repeat(30, 1fr) / repeat(30, 1fr);
 }
 .play-board .food {
-  background: darkorange;
+  background: red;
 }
 .play-board .head {
-  background: #3f9afc;
+  background: lime;
 }
 
 .controls {
