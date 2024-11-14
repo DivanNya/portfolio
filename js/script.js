@@ -2,6 +2,7 @@
 let snakeX = 1, snakeY = 1;
 let foodX, foodY;
 let velocityX = 0, velocityY = 0;
+let newVelocityX = 0, newVelocityY = 0;
 let snakeBody = [];
 let score = 0;
 let delay = 500;
@@ -25,8 +26,8 @@ function openLostModal() {
 }
 
 const updateFoodPosition = () => {
-    foodX = Math.floor(Math.random() * 29) + 2;
-    foodY = Math.floor(Math.random() * 29) + 2;
+    foodX = Math.floor(Math.random() * 28) + 2;
+    foodY = Math.floor(Math.random() * 28) + 2;
 }
 
 const changeDirection = e => {
@@ -37,32 +38,32 @@ const changeDirection = e => {
                 return;
             }
 
-            velocityX = 0;
-            velocityY = -1;
+            newVelocityX = 0;
+            newVelocityY = -1;
         },
         'ArrowDown': () => {
             if (velocityY === -1) {
                 return;
             }
 
-            velocityX = 0;
-            velocityY = 1;
+            newVelocityX = 0;
+            newVelocityY = 1;
         },
         'ArrowLeft': () => {
             if (velocityX === 1) {
                 return;
             }
 
-            velocityX = -1;
-            velocityY = 0;
+            newVelocityX = -1;
+            newVelocityY = 0;
         },
         'ArrowRight': () => {
             if (velocityX === -1) {
                 return;
             }
 
-            velocityX = 1;
-            velocityY = 0;
+            newVelocityX = 1;
+            newVelocityY = 0;
         },
     };
 
@@ -103,7 +104,9 @@ function isSnakeHeadHitBody(snakeBody, i) {
 }
 
 function isGameOver(snakeX, snakeY) {
-    return snakeX <= 0 || snakeX > 30 || snakeY <= 0 || snakeY > 30
+   
+    return false;
+    //return snakeX <= 0 || snakeX > 30 || snakeY <= 0 || snakeY > 30
 }
 
 function restartGame() {
@@ -113,6 +116,8 @@ function restartGame() {
     snakeY = 1;
     velocityX = 0;
     velocityY = 0;
+    newVelocityX = 0;
+    newVelocityY = 0;
     snakeBody = [];
     score = 0;
     updateFoodPosition();
@@ -136,12 +141,24 @@ function renderSnake(body, positionX, positionY) {
 const initGame = () => {
 
     handleNewIteration();
-
+    velocityX = newVelocityX;
+    velocityY = newVelocityY;
     snakeX += velocityX;
     snakeY += velocityY;
-
+    if (snakeX <= 0){
+        snakeX = 30;
+    } else
+    if(snakeX > 30){
+        snakeX = 1;
+    } else
+    if (snakeY <= 0){
+        snakeY = 30;
+    } else
+    if(snakeY > 30){
+        snakeY = 1;
+    }
     renderSnake(snakeBody, snakeX, snakeY);
-
+   
     if (isGameOver(snakeX, snakeY)) {
         document.dispatchEvent(new CustomEvent('snake:game_over'));
         return;
